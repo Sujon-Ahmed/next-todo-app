@@ -11,6 +11,7 @@ import { FaFile } from "react-icons/fa";
 export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [text, setText] = useState("");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const storedTodos = localStorage.getItem("todos");
@@ -51,6 +52,11 @@ export default function Home() {
     );
   };
 
+  // filtered todo
+  const filteredTodos = todos.filter((todo) =>
+    todo.text.toLowerCase().includes(search.toLowerCase()),
+  );
+
   return (
     <div className="max-w-xl mx-auto py-10">
       <h1 className="flex items-center gap-2 text-3xl font-bold mb-6">
@@ -65,8 +71,15 @@ export default function Home() {
         />
         <Button onClick={addTodo}>Add</Button>
       </div>
+      <div className="py-3">
+        <Input
+          placeholder="Search task..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
       <div className="space-y-3">
-        {todos.map((todo) => (
+        {filteredTodos.map((todo) => (
           <Card key={todo.id}>
             <CardContent className="flex justify-between items-center py-4">
               <div className="flex items-center gap-3">
