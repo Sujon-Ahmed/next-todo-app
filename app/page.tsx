@@ -57,6 +57,9 @@ export default function Home() {
     todo.text.toLowerCase().includes(search.toLowerCase()),
   );
 
+  // completed count
+  const completedCount = todos.filter((todo) => todo.completed).length;
+
   return (
     <div className="max-w-xl mx-auto py-10">
       <h1 className="flex items-center gap-2 text-3xl font-bold mb-6">
@@ -77,6 +80,9 @@ export default function Home() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+        <p className="text-sm text-gray-500 py-1 flex items-end justify-end">
+          Completed {completedCount} of {todos.length} tasks
+        </p>
       </div>
       <div className="space-y-3">
         {filteredTodos.map((todo) => (
