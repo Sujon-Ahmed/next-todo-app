@@ -60,6 +60,10 @@ export default function Home() {
   // completed count
   const completedCount = todos.filter((todo) => todo.completed).length;
 
+  // clear complete
+  const clearCompleted = () => {
+    setTodos(todos.filter((todo) => !todo.completed));
+  };
   return (
     <div className="max-w-xl mx-auto py-10">
       <h1 className="flex items-center gap-2 text-3xl font-bold mb-6">
@@ -80,8 +84,13 @@ export default function Home() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <p className="text-sm text-gray-500 py-1 flex items-end justify-end">
-          Completed {completedCount} of {todos.length} tasks
+        <p className="text-sm text-gray-500 py-1 flex items-center justify-between">
+          <span>
+            Completed {completedCount} of {todos.length} tasks
+          </span>
+          <Button variant="destructive" className="" onClick={clearCompleted}>
+            Clear Completed
+          </Button>
         </p>
       </div>
       <div className="space-y-3">
