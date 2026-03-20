@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Todo } from "@/types/todo";
-import { Trash2 } from "lucide-react";
+import { PenIcon, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FaFile } from "react-icons/fa";
 
@@ -12,6 +12,8 @@ export default function Home() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [text, setText] = useState("");
   const [search, setSearch] = useState("");
+  const [editText, setEditText] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     const storedTodos = localStorage.getItem("todos");
@@ -64,6 +66,17 @@ export default function Home() {
   const clearCompleted = () => {
     setTodos(todos.filter((todo) => !todo.completed));
   };
+
+  const saveEdit = () => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === editingId ? { ...todo, text: editText } : todo,
+      ),
+    );
+
+    setEditingId(null);
+    setEditText("");
+  };
   return (
     <div className="max-w-xl mx-auto py-10">
       <h1 className="flex items-center gap-2 text-3xl font-bold mb-6">
@@ -102,19 +115,45 @@ export default function Home() {
                   checked={todo.completed}
                   onCheckedChange={() => toggleTodo(todo.id)}
                 />
-                <span
-                  className={todo.completed ? "line-through text-gray-400" : ""}
-                >
-                  {todo.text}
-                </span>
+                {editingId === todo.id ? (
+                  <div className="flex gap-2">
+                    <Input
+                      value={editText}
+                      onChange={(e) => setEditText(e.target.value)}
+                    />
+                    <Button size="sm" onClick={saveEdit}>
+                      Save
+                    </Button>
+                  </div>
+                ) : (
+                  <span
+                    className={
+                      todo.completed ? "line-through text-gray-400" : ""
+                    }
+                  >
+                    {todo.text}
+                  </span>
+                )}
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => deleteTodo(todo.id)}
-              >
-                <Trash2 size={18} />
-              </Button>
+              <span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setEditingId(todo.id);
+                    setEditText(todo.text);
+                  }}
+                >
+                  <PenIcon />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => deleteTodo(todo.id)}
+                >
+                  <Trash2 size={18} />
+                </Button>
+              </span>
             </CardContent>
           </Card>
         ))}
